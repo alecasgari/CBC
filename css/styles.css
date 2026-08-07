@@ -1232,7 +1232,7 @@ input {
 
 .sticky-cta-inner {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 0.45rem;
 }
 
@@ -1253,12 +1253,6 @@ input {
   background: var(--card);
   color: var(--brand);
   flex-shrink: 0;
-}
-
-.sticky-whatsapp {
-  border-color: #25d366;
-  background: #25d366;
-  color: #fff;
 }
 
 .sticky-phone {

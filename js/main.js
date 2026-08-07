@@ -7,9 +7,6 @@
 const N8N_WEBHOOK_URL =
   "https://n8n.alecasgari.com/webhook/83591aad-47e3-475b-99a9-2f3d6d408e00";
 
-/** شماره واتساپ بین‌المللی بدون + و بدون صفر اول (مثال: 989123456789) — بعداً پر شود */
-const WHATSAPP_NUMBER = "";
-
 /** مقادیر پیش‌فرض وقتی لینک UTM نداشته باشد */
 const TRACKING_DEFAULTS = {
   campaign: "BHA3000-FreeDevice",
@@ -232,24 +229,6 @@ function initForm() {
   });
 }
 
-function initWhatsApp() {
-  const links = document.querySelectorAll("[data-whatsapp]");
-  if (!links.length) return;
-
-  const href = WHATSAPP_NUMBER
-    ? `https://wa.me/${WHATSAPP_NUMBER.replace(/\D/g, "")}`
-    : "#";
-
-  links.forEach((el) => {
-    el.setAttribute("href", href);
-    if (!WHATSAPP_NUMBER) {
-      el.addEventListener("click", (e) => {
-        e.preventDefault();
-      });
-    }
-  });
-}
-
 function initModals() {
   document.querySelectorAll("[data-open-form]").forEach((el) => {
     el.addEventListener("click", (e) => {
@@ -309,6 +288,5 @@ function initReveal() {
 document.addEventListener("DOMContentLoaded", () => {
   initForm();
   initModals();
-  initWhatsApp();
   initReveal();
 });
