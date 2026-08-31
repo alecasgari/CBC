@@ -39,6 +39,13 @@ function renderHero(product) {
             <a class="btn btn-outline" href="tel:+982633107">
               ${icon("i-phone")} تماس با کارشناس فروش
             </a>
+            ${
+              product.catalogPdf
+                ? `<a class="btn btn-outline btn-catalog" href="${encodeURI(product.catalogPdf)}" download="${product.catalogFileName}">
+              ${icon("i-download")} دانلود کاتالوگ
+            </a>`
+                : ""
+            }
           </div>
           <ul class="badge-grid">${badges}</ul>
         </div>

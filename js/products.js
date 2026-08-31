@@ -8,6 +8,8 @@ const PRODUCTS = {
     tagline: "طرح واگذاری رایگان — مناسب آزمایشگاه‌های با حجم متوسط",
     image: "assets/bha3000-hero.png",
     imageAlt: "دستگاه سل کانتر تمام‌اتوماتیک GETEIN BHA3000",
+    catalogPdf: "assets/BHA 3000.pdf",
+    catalogFileName: "GETEIN-BHA3000-Catalog.pdf",
     campaign: "BHA3000-FreeDevice",
     template: "full",
     meta: {
@@ -81,6 +83,8 @@ const PRODUCTS = {
     tagline: "5 پارت فشرده — 60 نمونه/ساعت، حجم نمونه کم",
     image: "assets/bha5000-hero.png",
     imageAlt: "دستگاه سل کانتر GETEIN BHA5000",
+    catalogPdf: "assets/BHA 5000.pdf",
+    catalogFileName: "GETEIN-BHA5000-Catalog.pdf",
     campaign: "BHA5000-Consultation",
     template: "compact",
     meta: {
@@ -157,6 +161,8 @@ const PRODUCTS = {
     tagline: "5 پارت حرفه‌ای — اتصال LIS، نمونه اورژانسی، ظرفیت بالا",
     image: "assets/bha5100-hero.png",
     imageAlt: "دستگاه سل کانتر GETEIN BHA5100",
+    catalogPdf: "assets/BHA 5100.pdf",
+    catalogFileName: "GETEIN-BHA5100-Catalog.pdf",
     campaign: "BHA5100-Consultation",
     template: "compact",
     meta: {

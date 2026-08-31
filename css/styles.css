@@ -474,7 +474,12 @@ input {
 @media (min-width: 640px) {
   .hero-ctas {
     flex-direction: row;
+    flex-wrap: wrap;
   }
+}
+
+.btn-catalog {
+  border-style: dashed;
 }
 
 .badge-grid {
