@@ -9,7 +9,7 @@ const N8N_WEBHOOK_URL =
 
 /** مقادیر پیش‌فرض وقتی لینک UTM نداشته باشد */
 const TRACKING_DEFAULTS = {
-  campaign: "BHA3000-FreeDevice",
+  campaign: "Ortanes-CBC",
   source: "SMS",
   medium: "SMS Marketing",
   product: "GETEIN BHA3000",
@@ -30,13 +30,19 @@ function getTrackingFields() {
     return fallback;
   };
 
+  const selected =
+    typeof getSelectedProduct === "function" ? getSelectedProduct() : null;
+
   return {
-    campaign: pick(["utm_campaign", "campaign"], TRACKING_DEFAULTS.campaign),
+    campaign: pick(
+      ["utm_campaign", "campaign"],
+      selected?.campaign || TRACKING_DEFAULTS.campaign
+    ),
     source: pick(["utm_source", "source"], TRACKING_DEFAULTS.source),
     medium: pick(["utm_medium", "medium"], TRACKING_DEFAULTS.medium),
     content: pick(["utm_content", "content"], ""),
     term: pick(["utm_term", "term"], ""),
-    product: TRACKING_DEFAULTS.product,
+    product: selected?.name || TRACKING_DEFAULTS.product,
     company: TRACKING_DEFAULTS.company,
   };
 }
@@ -65,6 +71,10 @@ function openFormModal() {
   const formModal = $("#form-modal");
   const thankModal = $("#thank-modal");
   closeModal(thankModal);
+  if (typeof updateFormProductCards === "function" && typeof getSelectedProductId === "function") {
+    const id = getSelectedProductId();
+    if (id) updateFormProductCards(id);
+  }
   openModal(formModal);
   const first = $("#fullName");
   if (first) setTimeout(() => first.focus(), 50);
@@ -203,6 +213,13 @@ function initForm() {
       return;
     }
 
+    const selectedProduct =
+      typeof getSelectedProduct === "function" ? getSelectedProduct() : null;
+    if (!selectedProduct) {
+      if (errorEl) errorEl.textContent = "لطفاً محصول مورد نظر را انتخاب کنید.";
+      return;
+    }
+
     const payload = {
       fullName,
       labName,
@@ -249,18 +266,26 @@ function initModals() {
 
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
+    const picker = $("#picker-modal");
     const thank = $("#thank-modal");
     const formModal = $("#form-modal");
     if (thank && thank.classList.contains("is-open")) {
       closeThankModal();
     } else if (formModal && formModal.classList.contains("is-open")) {
       closeFormModal();
+    } else if (
+      picker &&
+      picker.classList.contains("is-open") &&
+      typeof getSelectedProductId === "function" &&
+      getSelectedProductId()
+    ) {
+      if (typeof closePickerModal === "function") closePickerModal();
     }
   });
 }
 
-function initReveal() {
-  const items = document.querySelectorAll(".reveal");
+function initReveal(root = document) {
+  const items = root.querySelectorAll(".reveal");
   if (!items.length) return;
 
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
