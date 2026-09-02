@@ -169,36 +169,14 @@ function initForm() {
   const mobileInput = $("#mobile");
 
   if (mobileInput) {
-    // Manage composition (IME) state to avoid interfering with multi-step input
-    let composing = false;
-    mobileInput.addEventListener("compositionstart", () => (composing = true));
-    mobileInput.addEventListener("compositionend", () => {
-      composing = false;
+    mobileInput.addEventListener("input", () => {
       const cleaned = sanitizeMobileInput(mobileInput.value);
-      if (mobileInput.value !== cleaned) {
-        const pos = mobileInput.selectionStart || 0;
-        mobileInput.value = cleaned;
-        try {
-          mobileInput.setSelectionRange(pos, pos);
-        } catch (err) {
-          /* ignore */
-        }
-      }
+      if (mobileInput.value !== cleaned) mobileInput.value = cleaned;
     });
 
-    // Use input event (not keypress/keydown) and skip sanitizing while composing
-    mobileInput.addEventListener("input", () => {
-      if (composing) return;
-      const cleaned = sanitizeMobileInput(mobileInput.value);
-      if (mobileInput.value !== cleaned) {
-        const pos = mobileInput.selectionStart || 0;
-        mobileInput.value = cleaned;
-        try {
-          mobileInput.setSelectionRange(pos, pos);
-        } catch (err) {
-          /* ignore */
-        }
-      }
+    mobileInput.addEventListener("keypress", (e) => {
+      if (e.ctrlKey || e.metaKey || e.key.length !== 1) return;
+      if (!/[0-9۰-۹٠-٩]/.test(e.key)) e.preventDefault();
     });
 
     mobileInput.addEventListener("paste", (e) => {
