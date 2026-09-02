@@ -1086,6 +1086,17 @@ input {
   color: var(--destructive);
 }
 
+.mobile-keyboard-hint {
+  margin: 0.45rem 0 0;
+  padding: 0.55rem 0.65rem;
+  border-radius: 0.65rem;
+  border: 1px solid color-mix(in oklch, var(--ember) 35%, transparent);
+  background: var(--ember-soft);
+  color: var(--accent-foreground);
+  font-size: 0.75rem;
+  line-height: 1.55;
+}
+
 .form-submit {
   margin-top: 1.25rem;
   width: 100%;

@@ -150,14 +150,31 @@ async function submitLead(payload) {
   return true;
 }
 
-function toEnglishDigits(value) {
-  return String(value)
-    .replace(/[۰-۹]/g, (d) => String(d.charCodeAt(0) - 1728))
-    .replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 1632));
+function containsPersianDigits(value) {
+  return /[۰-۹٠-٩]/.test(String(value));
 }
 
 function sanitizeMobileInput(value) {
-  return toEnglishDigits(value).replace(/\D/g, "").slice(0, 11);
+  return String(value).replace(/[^0-9]/g, "").slice(0, 11);
+}
+
+let mobileHintTimer = null;
+
+function showMobileKeyboardHint(hintEl) {
+  if (!hintEl) return;
+  hintEl.hidden = false;
+  clearTimeout(mobileHintTimer);
+  mobileHintTimer = setTimeout(() => {
+    hintEl.hidden = true;
+  }, 5000);
+}
+
+function applyMobileInput(mobileInput, hintEl, rawValue) {
+  if (containsPersianDigits(rawValue)) {
+    showMobileKeyboardHint(hintEl);
+  }
+  const cleaned = sanitizeMobileInput(rawValue);
+  if (mobileInput.value !== cleaned) mobileInput.value = cleaned;
 }
 
 function initForm() {
@@ -167,22 +184,39 @@ function initForm() {
   const errorEl = $("#form-error");
   const submitBtn = $("#form-submit");
   const mobileInput = $("#mobile");
+  const mobileHint = $("#mobile-keyboard-hint");
 
   if (mobileInput) {
+    mobileInput.addEventListener("beforeinput", (e) => {
+      if (e.inputType === "insertText" && e.data && !/^[0-9]*$/.test(e.data)) {
+        e.preventDefault();
+        if (containsPersianDigits(e.data)) showMobileKeyboardHint(mobileHint);
+      }
+    });
+
     mobileInput.addEventListener("input", () => {
-      const cleaned = sanitizeMobileInput(mobileInput.value);
-      if (mobileInput.value !== cleaned) mobileInput.value = cleaned;
+      applyMobileInput(mobileInput, mobileHint, mobileInput.value);
     });
 
     mobileInput.addEventListener("keypress", (e) => {
       if (e.ctrlKey || e.metaKey || e.key.length !== 1) return;
-      if (!/[0-9۰-۹٠-٩]/.test(e.key)) e.preventDefault();
+      if (!/[0-9]/.test(e.key)) {
+        e.preventDefault();
+        if (containsPersianDigits(e.key)) showMobileKeyboardHint(mobileHint);
+      }
+    });
+
+    mobileInput.addEventListener("compositionend", () => {
+      applyMobileInput(mobileInput, mobileHint, mobileInput.value);
     });
 
     mobileInput.addEventListener("paste", (e) => {
       e.preventDefault();
       const text = (e.clipboardData || window.clipboardData).getData("text");
-      mobileInput.value = sanitizeMobileInput(text);
+      const start = mobileInput.selectionStart ?? mobileInput.value.length;
+      const end = mobileInput.selectionEnd ?? mobileInput.value.length;
+      const merged = mobileInput.value.slice(0, start) + text + mobileInput.value.slice(end);
+      applyMobileInput(mobileInput, mobileHint, merged);
     });
   }
 
@@ -252,6 +286,7 @@ function initModals() {
       e.preventDefault();
       const errorEl = $("#form-error");
       if (errorEl) errorEl.textContent = "";
+      if ($("#mobile-keyboard-hint")) $("#mobile-keyboard-hint").hidden = true;
       openFormModal();
     });
   });
